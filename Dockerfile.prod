@@ -1,0 +1,28 @@
+FROM python:3.13.3-slim-bookworm
+
+RUN mkdir -p /home/app
+RUN addgroup --system app && adduser --system --group app
+
+ENV HOME=/home/app \
+    APP_HOME=/home/app/web \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ENVIRONMENT=prod \
+    PYTHONPATH=/app
+
+
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+RUN pip install --upgrade pip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+RUN chown -R app:app $APP_HOME
+USER app
+
+EXPOSE 8501
+
+CMD streamlit run app/main.py --server.port=$PORT --server.address=0.0.0.0
