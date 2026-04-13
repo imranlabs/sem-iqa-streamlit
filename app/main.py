@@ -25,7 +25,7 @@ st.set_page_config(
 )
 
 st.title("SEM Image Quality Assessment")
-st.caption("Tool-to-tool matching and image quality analysis for CD-SEM workflows.")
+st.caption("Tool-to-tool matching and image quality analysis for SEM metrology workflows.")
 with st.expander("About this app", expanded=False):
         st.markdown("""
         **SEM Image Quality Assessment (IQA)** is a tool for quantifying and comparing 
