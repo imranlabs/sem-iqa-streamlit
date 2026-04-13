@@ -1,6 +1,6 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 
 
 def render_histogram_tab(ref_file, test_file, analysis: dict):
@@ -32,16 +32,33 @@ def render_histogram_tab(ref_file, test_file, analysis: dict):
     hist_test = histogram.get("hist_test", [])
 
     if hist_ref and hist_test:
-        fig, ax = plt.subplots(figsize=(9, 3.5))
-        ax.plot(hist_ref,  color="steelblue", alpha=0.8, label="Reference")
-        ax.plot(hist_test, color="tomato",    alpha=0.8, label="Test")
-        ax.set_xlabel("Pixel intensity")
-        ax.set_ylabel("Normalised frequency")
-        ax.legend()
-        ax.grid(True, alpha=0.3)
-        fig.tight_layout()
-        st.pyplot(fig)
-        plt.close(fig)
+            
+        x = list(range(256))
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=x, y=hist_ref,
+            mode="lines",
+            name="Reference",
+            line=dict(color="steelblue", width=1.5),
+            fill="tozeroy",
+            fillcolor="rgba(70,130,180,0.15)",
+        ))
+        fig.add_trace(go.Scatter(
+            x=x, y=hist_test,
+            mode="lines",
+            name="Test",
+            line=dict(color="tomato", width=1.5),
+            fill="tozeroy",
+            fillcolor="rgba(255,99,71,0.15)",
+        ))
+        fig.update_layout(
+            xaxis=dict(title="Pixel intensity", range=[0, 255]),
+            yaxis=dict(title="Normalised frequency"),
+            height=350,
+            margin=dict(l=20, r=20, t=20, b=40),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     st.divider()
 
@@ -83,6 +100,32 @@ def render_fft_tab(fft: dict):
 
     st.divider()
 
+    # --- Interpretation guide ---
+    with st.expander("How to interpret FFT spectra", expanded=False):
+        st.markdown("""
+        The FFT (Fast Fourier Transform) magnitude spectrum decomposes an image 
+        into its spatial frequency components.
+
+        **Center of the image** — low frequencies representing overall brightness 
+        and large-scale structures. Always bright.
+
+        **Edges and periphery** — high frequencies representing fine detail, 
+        sharp edges, and texture. A sharp image has energy spread toward the edges.
+
+        **What to look for:**
+        - A sharp, well-focused image shows energy distributed across the full spectrum
+        - A blurry or defocused image has energy concentrated near the center
+        - The difference panel highlights where the two images diverge in frequency 
+          content — warm colors (red) indicate the test has more energy at that 
+          frequency, cool colors (blue) indicate less
+
+        **Sharpness ratio** — test sharpness divided by reference sharpness. 
+        Closer to 1.0 means the test image preserves the same frequency content 
+        as the reference.
+        """)
+
+    st.divider()
+
     # --- FFT magnitude plots ---
     st.subheader("Magnitude spectra")
 
@@ -91,20 +134,52 @@ def render_fft_tab(fft: dict):
     diff_mag = np.array(fft.get("diff_magnitude", []))
 
     if ref_mag.size and test_mag.size and diff_mag.size:
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
+        col1, col2, col3 = st.columns(3)
 
-        ax1.imshow(ref_mag,  cmap="hot")
-        ax1.set_title(f"Reference\nSharpness: {fft.get('fft_ref', 0):.1f}")
-        ax1.axis("off")
+        with col1:
+            fig = go.Figure(go.Heatmap(
+                z=ref_mag,
+                colorscale="Hot",
+                colorbar=dict(title="log mag", thickness=12),
+                showscale=True,
+            ))
+            fig.update_layout(
+                title=dict(text=f"Reference — sharpness: {fft.get('fft_ref', 0):.1f}", font=dict(size=12)),
+                height=300,
+                margin=dict(l=10, r=10, t=40, b=10),
+                xaxis=dict(showticklabels=False),
+                yaxis=dict(showticklabels=False, autorange="reversed"),
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-        ax2.imshow(test_mag, cmap="hot")
-        ax2.set_title(f"Test\nSharpness: {fft.get('fft_test', 0):.1f}")
-        ax2.axis("off")
+        with col2:
+            fig = go.Figure(go.Heatmap(
+                z=test_mag,
+                colorscale="Hot",
+                colorbar=dict(title="log mag", thickness=12),
+                showscale=True,
+            ))
+            fig.update_layout(
+                title=dict(text=f"Test — sharpness: {fft.get('fft_test', 0):.1f}", font=dict(size=12)),
+                height=300,
+                margin=dict(l=10, r=10, t=40, b=10),
+                xaxis=dict(showticklabels=False),
+                yaxis=dict(showticklabels=False, autorange="reversed"),
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
-        ax3.imshow(diff_mag, cmap="coolwarm")
-        ax3.set_title(f"Difference (Test − Ref)\nRatio: {fft.get('fft_ratio', 0):.3f}")
-        ax3.axis("off")
-
-        fig.tight_layout()
-        st.pyplot(fig)
-        plt.close(fig)
+        with col3:
+            fig = go.Figure(go.Heatmap(
+                z=diff_mag,
+                colorscale="RdBu_r",
+                colorbar=dict(title="Δ log mag", thickness=12),
+                showscale=True,
+            ))
+            fig.update_layout(
+                title=dict(text=f"Difference (Test − Ref) — ratio: {fft.get('fft_ratio', 0):.3f}", font=dict(size=12)),
+                height=300,
+                margin=dict(l=10, r=10, t=40, b=10),
+                xaxis=dict(showticklabels=False),
+                yaxis=dict(showticklabels=False, autorange="reversed"),
+            )
+            st.plotly_chart(fig, use_container_width=True)

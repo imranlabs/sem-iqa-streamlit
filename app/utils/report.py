@@ -41,12 +41,16 @@ def generate_csv_report(
         ("laplacian_ref",      metrics.get("laplacian_ref", "")),
         ("laplacian_test",     metrics.get("laplacian_test", "")),
         ("laplacian_ratio",    metrics.get("laplacian_ratio", "")),
+        ("cnr_ref",   metrics.get("cnr_ref", "")),
+        ("cnr_test",  metrics.get("cnr_test", "")),
+        ("cnr_ratio", metrics.get("cnr_ratio", "")),
         ("fft_ref",            fft.get("fft_ref", "")),
         ("fft_test",           fft.get("fft_test", "")),
         ("fft_ratio",          fft.get("fft_ratio", "")),
         ("fft_difference",     fft.get("fft_difference", "")),
         ("brisque_ref",        metrics.get("brisque_ref", "")),
         ("brisque_test",       metrics.get("brisque_test", "")),
+       
 
         # Histogram / tool matching
         ("correlation_score",      histogram.get("correlation_score", "")),
