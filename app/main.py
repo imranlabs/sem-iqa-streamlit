@@ -31,7 +31,7 @@ with st.expander("About this app", expanded=False):
         **SEM Image Quality Assessment (IQA)** is a tool for quantifying and comparing 
         image quality between a reference and a test image.
 
-        Originally designed for **CD-SEM metrology workflows** in semiconductor manufacturing, 
+        Originally designed for **SEM metrology workflows** in semiconductor manufacturing, 
         the metrics are general-purpose and work on any image pair.
 
         **What it does:**
