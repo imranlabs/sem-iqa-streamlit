@@ -72,14 +72,14 @@ def render_histogram_tab(ref_file, test_file, analysis: dict):
     )
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Correlation",        f"{histogram.get('correlation_score', 0):.3f}")
-    col2.metric("Hellinger distance", f"{histogram.get('hellinger_distance', 0):.3f}")
-    col3.metric("Brightness Δ",       f"{histogram.get('brightness_difference', 0):.1f}")
+    col1.metric("Correlation",        f"{histogram.get('correlation_score') or 0:.3f}")
+    col2.metric("Hellinger distance", f"{histogram.get('hellinger_distance') or 0:.3f}")
+    col3.metric("Brightness Δ",       f"{histogram.get('brightness_difference') or 0:.1f}")
 
     col4, col5, col6 = st.columns(3)
-    col4.metric("Contrast ratio",     f"{histogram.get('contrast_ratio', 0):.3f}")
-    col5.metric("Dynamic range ref",  histogram.get("dynamic_range_ref", 0))
-    col6.metric("Dynamic range test", histogram.get("dynamic_range_test", 0))
+    col4.metric("Contrast ratio",     f"{histogram.get('contrast_ratio') or 0:.3f}")
+    col5.metric("Dynamic range ref",  histogram.get("dynamic_range_ref") or 0)
+    col6.metric("Dynamic range test", histogram.get("dynamic_range_test") or 0)
 
 
 def render_fft_tab(fft: dict):
@@ -94,9 +94,9 @@ def render_fft_tab(fft: dict):
 
     # --- Score cards ---
     col1, col2, col3 = st.columns(3)
-    col1.metric("Reference sharpness", f"{fft.get('fft_ref', 0):.1f}")
-    col2.metric("Test sharpness",      f"{fft.get('fft_test', 0):.1f}")
-    col3.metric("Sharpness ratio",     f"{fft.get('fft_ratio', 0):.3f}")
+    col1.metric("Reference sharpness", f"{fft.get('fft_ref') or 0:.1f}")
+    col2.metric("Test sharpness",      f"{fft.get('fft_test') or 0:.1f}")
+    col3.metric("Sharpness ratio",     f"{fft.get('fft_ratio') or 0:.3f}")
 
     st.divider()
 
@@ -183,3 +183,5 @@ def render_fft_tab(fft: dict):
                 yaxis=dict(showticklabels=False, autorange="reversed"),
             )
             st.plotly_chart(fig, use_container_width=True)
+    else: 
+        st.warning("FFT magnitude data unavailable for this image pair.")

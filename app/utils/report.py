@@ -4,8 +4,6 @@ import csv
 from datetime import datetime
 
 
-
-
 def generate_csv_report(
     ref_filename: str,
     test_filename: str,
