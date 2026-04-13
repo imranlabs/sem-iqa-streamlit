@@ -1,9 +1,13 @@
-import streamlit as st
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import streamlit as st
 from app.components.upload import render_sidebar
 from app.components.metrics import render_metrics_tab
 from app.components.charts import render_histogram_tab, render_fft_tab
 from app.utils.api_client import fetch_analysis, fetch_fft
+
 
 st.set_page_config(
     page_title="SEM IQA",
