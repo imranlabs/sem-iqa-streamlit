@@ -1,5 +1,4 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import numpy as np
 from app.utils.report import generate_csv_report
 from datetime import datetime
