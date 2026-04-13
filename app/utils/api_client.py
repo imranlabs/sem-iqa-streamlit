@@ -18,7 +18,7 @@ def fetch_analysis(ref_file, test_file) -> dict | None:
                 "reference": (ref_file.name, ref_file, ref_file.type),
                 "test":      (test_file.name, test_file, test_file.type),
             },
-            timeout=30,
+            timeout=120,
         )
         response.raise_for_status()
         return response.json()

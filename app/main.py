@@ -2,6 +2,15 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import requests
+from app.core.config import settings
+
+# Warm up the backend silently on app load
+try:
+    requests.get(f"{settings.backend_url}/ping", timeout=10)
+except Exception:
+    pass
+
 import streamlit as st
 from app.components.upload import render_sidebar
 from app.components.metrics import render_metrics_tab
