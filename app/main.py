@@ -33,6 +33,10 @@ with st.expander("About this app", expanded=False):
 
         Originally designed for **SEM metrology workflows** in semiconductor manufacturing, 
         the metrics are general-purpose and work on any image pair.
+        
+        **Privacy:** Uploaded images are processed in memory and are not stored. 
+        However, this is a public demo on shared hosting — please do not upload 
+        confidential or proprietary images.
 
         **What it does:**
         - Computes full-reference metrics (SSIM, PSNR, Normalized Variance focus score)
@@ -43,7 +47,7 @@ with st.expander("About this app", expanded=False):
         **Image handling:**
         - All images are converted to grayscale internally regardless of input format
         - Accepted formats: JPG, PNG, BMP, TIFF
-        - Maximum file size: 50MB per image
+        - Maximum file size: 5 MB per image
         - If reference and test images have different dimensions, both are resized 
         to the smaller of the two to avoid upsampling artifacts
 
